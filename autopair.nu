@@ -8,6 +8,35 @@ module autopair {
     "`": "`"
   }
 
+  export def insert-edit [
+    line: string
+    pos: int
+    char: string
+  ]: nothing -> record<line: string, pos: int> {
+    if $pos < 0 { return { line: $line, pos: $pos } }
+
+    let chars = ($line | split chars)
+    let head = ($chars | slice ..<$pos | str join)
+    let tail = ($chars | slice $pos.. | str join)
+    let right = ($chars | get --optional $pos | default "")
+    let inserted = (match $char {
+      $c if $c == $right and $c in ($pairs | values) => ""
+      $c if $c in ($pairs | columns) => $"($c)($pairs | get $c)"
+      $c => $c
+    })
+
+    {
+      line: $"($head)($inserted)($tail)"
+      pos: ($pos + 1)
+    }
+  }
+
+  export def insert [char: string] {
+    let edited = (insert-edit (commandline) (commandline get-cursor) $char)
+    commandline edit --replace $edited.line
+    commandline set-cursor $edited.pos
+  }
+
   export def backspace-edit [
     line: string
     pos: int
@@ -34,18 +63,22 @@ module autopair {
     commandline set-cursor $edited.pos
   }
 
-  export def keybindings []: nothing -> list<record> {
+  def pair-chars []: nothing -> list<string> {
     $pairs
-    | items {|open, close|
+    | items {|open, close| [$open $close] }
+    | flatten
+    | uniq
+  }
+
+  export def keybindings []: nothing -> list<record> {
+    pair-chars
+    | each {|char|
       {
-        name: $"autopair_insert_($open)"
+        name: $"autopair_insert_($char)"
         modifier: none
-        keycode: $"char_($open)"
+        keycode: $"char_($char)"
         mode: [emacs vi_insert]
-        event: [
-          { edit: insertstring, value: $"($open)($close)" }
-          { edit: moveleft }
-        ]
+        event: { send: executehostcommand, cmd: $"autopair insert ($char | to nuon)" }
       }
     }
     | append {

@@ -1,12 +1,12 @@
 use std/assert
 use std/testing *
-use pairs.nu [pairs]
+use pairs.nu [pair-chars]
 source ../autopair.nu
 
-# ( [ { " ' ` + backspace = 7 bindings
+# ( ) [ ] { } " ' ` + backspace = 10 bindings
 @test
-def "keybindings returns one binding per pair plus backspace" [] {
-  assert equal (autopair keybindings | length) (($pairs | length) + 1)
+def "keybindings returns one binding per pair char plus backspace" [] {
+  assert equal (autopair keybindings | length) ((pair-chars | length) + 1)
 }
 
 @test
@@ -15,23 +15,26 @@ def "keybindings gives every binding a unique name" [] {
   assert equal ($names | uniq | length) ($names | length)
 }
 
-# ( -> (|), [ -> [|], { -> {|}
-# " -> "|", ' -> '|', ` -> `|`
+# ( ) [ ] { } " ' ` -> autopair insert
 @test
-def "keybindings binds each opening char to insert its pair" [] {
-  for pair in $pairs {
+def "keybindings binds each pair char to the autopair command" [] {
+  for char in (pair-chars) {
     let expected = {
-      name: $"autopair_insert_($pair.open)"
+      name: $"autopair_insert_($char)"
       modifier: none
-      keycode: $"char_($pair.open)"
+      keycode: $"char_($char)"
       mode: [emacs vi_insert]
-      event: [
-        { edit: insertstring, value: $"($pair.open)($pair.close)" }
-        { edit: moveleft }
-      ]
+      event: { send: executehostcommand, cmd: $"autopair insert ($char | to nuon)" }
     }
-    assert equal (autopair keybindings | where name == $expected.name | first) $expected $"pair ($pair.open)"
+    assert equal (autopair keybindings | where name == $expected.name | first) $expected $"char ($char)"
   }
+}
+
+# " -> autopair insert "\""
+@test
+def "keybindings quotes the char it passes to the autopair command" [] {
+  let binding = (autopair keybindings | where name == 'autopair_insert_"' | first)
+  assert equal $binding.event.cmd 'autopair insert "\""'
 }
 
 # backspace -> autopair backspace
@@ -50,7 +53,7 @@ def "keybindings binds backspace to the autopair command" [] {
 def "install adds every binding to the config" [] {
   $env.config.keybindings = []
   autopair install
-  assert equal ($env.config.keybindings | length) (($pairs | length) + 1)
+  assert equal ($env.config.keybindings | length) ((pair-chars | length) + 1)
   assert equal $env.config.keybindings (autopair keybindings)
 }
 
@@ -59,7 +62,7 @@ def "install does not duplicate bindings when run twice" [] {
   $env.config.keybindings = []
   autopair install
   autopair install
-  assert equal ($env.config.keybindings | length) (($pairs | length) + 1)
+  assert equal ($env.config.keybindings | length) ((pair-chars | length) + 1)
 }
 
 # an autopair binding left over from an older version -> replaced
@@ -77,7 +80,7 @@ def "install replaces a stale binding of its own" [] {
     mode: [emacs vi_insert]
     event: { send: executehostcommand, cmd: "autopair backspace" }
   }
-  assert equal ($env.config.keybindings | length) (($pairs | length) + 1)
+  assert equal ($env.config.keybindings | length) ((pair-chars | length) + 1)
 }
 
 @test
@@ -86,5 +89,5 @@ def "install keeps bindings it does not own" [] {
   $env.config.keybindings = [$other]
   autopair install
   assert equal ($env.config.keybindings | first) $other
-  assert equal ($env.config.keybindings | length) (($pairs | length) + 2)
+  assert equal ($env.config.keybindings | length) ((pair-chars | length) + 2)
 }
