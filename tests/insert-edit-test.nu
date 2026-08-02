@@ -1,6 +1,6 @@
 use std/assert
 use std/testing *
-use pairs.nu [pairs]
+use fixtures.nu [pairs grapheme_clusters]
 source ../autopair.nu
 
 
@@ -70,6 +70,21 @@ def "insert-edit does nothing at a negative cursor" [] {
 @test
 def "insert-edit counts chars, not bytes" [] {
   assert equal (autopair insert-edit "あ" 1 "(") { line: "あ()", pos: 2 }
+}
+
+# 👨‍👩‍👧| + ( -> 👨‍👩‍👧(|), 🇯🇵| + ( -> 🇯🇵(|), 🫶🏻| + ( -> 🫶🏻(|)
+@test
+def "insert-edit does not split a grapheme cluster" [] {
+  for cluster in $grapheme_clusters {
+    let line = ($cluster + "()")
+    assert equal (autopair insert-edit $cluster 1 "(") { line: $line, pos: 2 } $"cluster ($cluster)"
+  }
+}
+
+# a🫶🏻|b + ( -> a🫶🏻(|b
+@test
+def "insert-edit indexes the line by graphemes" [] {
+  assert equal (autopair insert-edit "a🫶🏻b" 2 "(") { line: "a🫶🏻(b", pos: 3 }
 }
 
 # | x + " -> "|" x

@@ -1,5 +1,3 @@
-# Shared test data. The filename does not match a nutest suite pattern,
-# so this file is not collected as a test suite.
 export const pairs = [
   { open: "(", close: ")" }
   { open: "[", close: "]" }
@@ -12,3 +10,5 @@ export const pairs = [
 export def pair-chars []: nothing -> list<string> {
   $pairs | get open | append ($pairs | get close) | uniq
 }
+
+export const grapheme_clusters = ["👨‍👩‍👧" "🇯🇵" "🫶🏻"]

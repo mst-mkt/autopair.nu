@@ -1,6 +1,6 @@
 use std/assert
 use std/testing *
-use pairs.nu [pairs]
+use fixtures.nu [pairs grapheme_clusters]
 source ../autopair.nu
 
 
@@ -60,4 +60,18 @@ def "backspace-edit deletes one char when the cursor is past the pair" [] {
 @test
 def "backspace-edit counts chars, not bytes" [] {
   assert equal (autopair backspace-edit "あい" 2) { line: "あ", pos: 1 }
+}
+
+# 👨‍👩‍👧| -> |, 🇯🇵| -> |, 🫶🏻| -> |
+@test
+def "backspace-edit deletes a whole grapheme cluster" [] {
+  for cluster in $grapheme_clusters {
+    assert equal (autopair backspace-edit $cluster 1) { line: "", pos: 0 } $"cluster ($cluster)"
+  }
+}
+
+# a🫶🏻|b -> a|b
+@test
+def "backspace-edit indexes the line by graphemes" [] {
+  assert equal (autopair backspace-edit "a🫶🏻b" 2) { line: "ab", pos: 1 }
 }

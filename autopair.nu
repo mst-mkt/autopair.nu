@@ -14,7 +14,7 @@ module autopair {
     text: string
     char: string
   ]: nothing -> int {
-    $text | split chars | where {|c| $c == $char } | length
+    $text | split chars --grapheme-clusters | where {|c| $c == $char } | length
   }
 
   def balanced [
@@ -43,8 +43,8 @@ module autopair {
   ]: nothing -> bool {
     let closes = ($pairs | values)
     let brackets = ($closes | where {|c| $c not-in ($pairs | columns) })
-    let left = ($head | split chars | last 1 | str join)
-    let right = ($tail | split chars | first 1 | str join)
+    let left = ($head | split chars --grapheme-clusters | last 1 | str join)
+    let right = ($tail | split chars --grapheme-clusters | first 1 | str join)
     let same_char = ($char == ($pairs | get $char))
     let right_free = ($right == "" or $right in $spaces or $right in $closes)
     let left_free = (not $same_char or ($left != $char and $left !~ '\w' and $left not-in $brackets))
@@ -59,7 +59,7 @@ module autopair {
   ]: nothing -> record<line: string, pos: int> {
     if $pos < 0 { return { line: $line, pos: $pos } }
 
-    let chars = ($line | split chars)
+    let chars = ($line | split chars --grapheme-clusters)
     let head = ($chars | slice ..<$pos | str join)
     let tail = ($chars | slice $pos.. | str join)
     let inserted = (match $char {
@@ -86,7 +86,7 @@ module autopair {
   ]: nothing -> record<line: string, pos: int> {
     if $pos <= 0 { return { line: $line, pos: $pos } }
 
-    let chars = ($line | split chars)
+    let chars = ($line | split chars --grapheme-clusters)
     let around = ($chars | slice ($pos - 1)..$pos | str join)
     let in_empty_pair = ($around in ($pairs | items {|open, close| $open + $close }))
     let deleted = if $in_empty_pair { [($pos - 1) $pos] } else { [($pos - 1)] }

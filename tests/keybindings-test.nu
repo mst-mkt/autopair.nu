@@ -1,6 +1,6 @@
 use std/assert
 use std/testing *
-use pairs.nu [pair-chars]
+use fixtures.nu [pair-chars]
 source ../autopair.nu
 
 # ( ) [ ] { } " ' ` + backspace = 10 bindings
