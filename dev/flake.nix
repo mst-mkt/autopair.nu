@@ -9,6 +9,10 @@
       url = "github:nushell/nu_scripts";
       flake = false;
     };
+    nutest = {
+      url = "github:vyadh/nutest/v1.2.0";
+      flake = false;
+    };
   };
 
   outputs =
@@ -16,6 +20,7 @@
       nixpkgs,
       agent-skills,
       nushell-skills,
+      nutest,
       ...
     }:
     let
@@ -41,6 +46,8 @@
       devShells = forAllSystems (pkgs: {
         default = pkgs.mkShell {
           packages = [ pkgs.nushell ];
+
+          env.NU_LIB_DIRS = "${nutest}";
 
           shellHook = agentLib.mkShellHook {
             inherit pkgs;

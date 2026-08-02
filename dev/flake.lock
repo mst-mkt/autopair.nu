@@ -74,11 +74,29 @@
         "type": "github"
       }
     },
+    "nutest": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1783281957,
+        "narHash": "sha256-IkDGL0yGIapatoaJiqjk+6CALIRe7FF1Pq2/5zHkIqw=",
+        "owner": "vyadh",
+        "repo": "nutest",
+        "rev": "c46af12bc6e3819b95d69f54f35526ca3e5810d6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "vyadh",
+        "ref": "v1.2.0",
+        "repo": "nutest",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "agent-skills": "agent-skills",
         "nixpkgs": "nixpkgs",
-        "nushell-skills": "nushell-skills"
+        "nushell-skills": "nushell-skills",
+        "nutest": "nutest"
       }
     }
   },
