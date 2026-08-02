@@ -45,7 +45,10 @@
     {
       devShells = forAllSystems (pkgs: {
         default = pkgs.mkShell {
-          packages = [ pkgs.nushell ];
+          packages = [
+            pkgs.just
+            pkgs.nushell
+          ];
 
           env.NU_LIB_DIRS = "${nutest}";
 
@@ -61,14 +64,18 @@
         tests =
           pkgs.runCommand "autopair-tests"
             {
-              nativeBuildInputs = [ pkgs.nushell ];
+              nativeBuildInputs = [
+                pkgs.just
+                pkgs.nushell
+              ];
               NU_LIB_DIRS = "${nutest}";
             }
             ''
               cp ${../autopair.nu} autopair.nu
+              cp ${../justfile} justfile
               cp -r ${../tests} tests
 
-              nu -n -c 'use nutest; nutest run-tests --path tests --fail'
+              just test
               touch $out
             '';
       });
