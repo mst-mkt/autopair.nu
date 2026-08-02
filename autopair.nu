@@ -10,18 +10,46 @@ module autopair {
 
   const spaces = [" " "\t" "\n" "\r"]
 
+  def count-char [
+    text: string
+    char: string
+  ]: nothing -> int {
+    $text | split chars | where {|c| $c == $char } | length
+  }
+
+  def balanced [
+    open: string
+    head: string
+    tail: string
+  ]: nothing -> bool {
+    let close = ($pairs | get $open)
+
+    if $open == $close {
+      let quotes = ((count-char $head $open) + (count-char $tail $open))
+
+      ($quotes mod 2) == 0
+    } else {
+      let unclosed = ((count-char $head $open) - (count-char $head $close))
+      let unopened = ((count-char $tail $close) - (count-char $tail $open))
+
+      ([$unclosed 0] | math max) >= $unopened
+    }
+  }
+
   def can-pair [
     char: string
-    left: string
-    right: string
+    head: string
+    tail: string
   ]: nothing -> bool {
     let closes = ($pairs | values)
     let brackets = ($closes | where {|c| $c not-in ($pairs | columns) })
+    let left = ($head | split chars | last 1 | str join)
+    let right = ($tail | split chars | first 1 | str join)
     let same_char = ($char == ($pairs | get $char))
     let right_free = ($right == "" or $right in $spaces or $right in $closes)
     let left_free = (not $same_char or ($left != $char and $left !~ '\w' and $left not-in $brackets))
 
-    $right_free and $left_free
+    $right_free and $left_free and (balanced $char $head $tail)
   }
 
   export def insert-edit [
@@ -34,11 +62,9 @@ module autopair {
     let chars = ($line | split chars)
     let head = ($chars | slice ..<$pos | str join)
     let tail = ($chars | slice $pos.. | str join)
-    let left = ($chars | slice ($pos - 1)..<$pos | str join)
-    let right = ($chars | get --optional $pos | default "")
     let inserted = (match $char {
-      $c if $c == $right and $c in ($pairs | values) => ""
-      $c if $c in ($pairs | columns) and (can-pair $c $left $right) => $"($c)($pairs | get $c)"
+      $c if $c in ($pairs | values) and ($tail | str starts-with $c) => ""
+      $c if $c in ($pairs | columns) and (can-pair $c $head $tail) => $"($c)($pairs | get $c)"
       $c => $c
     })
 

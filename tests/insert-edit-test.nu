@@ -48,6 +48,12 @@ def "insert-edit does not skip a closing char of another pair" [] {
   assert equal (autopair insert-edit "(]" 1 ")") { line: "()]", pos: 2 }
 }
 
+# | "" + " -> "|" ""
+@test
+def "insert-edit does not skip a closing char away from the cursor" [] {
+  assert equal (autopair insert-edit ' ""' 0 '"') { line: '"" ""', pos: 1 }
+}
+
 # a| + a -> aa|
 @test
 def "insert-edit inserts an unpaired char on its own" [] {
@@ -115,6 +121,50 @@ def "insert-edit pairs in front of a closing bracket" [] {
   }
 }
 
+# foo|) + ( -> foo(|), foo|] + [ -> foo[|], foo|} + { -> foo{|}
+@test
+def "insert-edit does not pair in front of an unmatched closing bracket" [] {
+  for pair in ($pairs | where {|p| $p.open != $p.close }) {
+    let before = $"foo($pair.close)"
+    let line = $"foo($pair.open)($pair.close)"
+    assert equal (autopair insert-edit $before 3 $pair.open) { line: $line, pos: 4 } $"pair ($pair.open)"
+  }
+}
+
+# (foo|) + ( -> (foo(|)), [foo|] + [ -> [foo[|]], {foo|} + { -> {foo{|}}
+@test
+def "insert-edit pairs in front of a closing bracket that has an opening one" [] {
+  for pair in ($pairs | where {|p| $p.open != $p.close }) {
+    let before = $"($pair.open)foo($pair.close)"
+    let line = $"($pair.open)foo($pair.open)($pair.close)($pair.close)"
+    assert equal (autopair insert-edit $before 4 $pair.open) { line: $line, pos: 5 } $"pair ($pair.open)"
+  }
+}
+
+# foo|] + ( -> foo(|)]
+@test
+def "insert-edit counts each bracket kind on its own" [] {
+  assert equal (autopair insert-edit "foo]" 3 "(") { line: "foo()]", pos: 4 }
+}
+
+# ())| + ( -> ())(|)
+@test
+def "insert-edit pairs with unmatched closing brackets behind the cursor" [] {
+  assert equal (autopair insert-edit "())" 3 "(") { line: "())()", pos: 4 }
+}
+
+# (a)|) + ( -> (a)(|)
+@test
+def "insert-edit does not count a closed bracket behind the cursor" [] {
+  assert equal (autopair insert-edit "(a))" 3 "(") { line: "(a)()", pos: 4 }
+}
+
+# | (foo) + ( -> (|) (foo)
+@test
+def "insert-edit does not count a closed bracket ahead of the cursor" [] {
+  assert equal (autopair insert-edit " (foo)" 0 "(") { line: "() (foo)", pos: 1 }
+}
+
 # don| + ' -> don'|, don| + " -> don"|
 @test
 def "insert-edit does not pair a quote after a word char" [] {
@@ -152,10 +202,32 @@ def "insert-edit pairs a quote after a different quote" [] {
   assert equal (autopair insert-edit '"' 1 "'") { line: "\"''", pos: 2 }
 }
 
-# --flag=| + ' -> --flag='|'
+# foo=| + ' -> foo='|'
 @test
 def "insert-edit pairs a quote after a symbol" [] {
-  assert equal (autopair insert-edit "--flag=" 7 "'") { line: "--flag=''", pos: 8 }
+  assert equal (autopair insert-edit "foo=" 4 "'") { line: "foo=''", pos: 5 }
+}
+
+# "foo.| + " -> "foo."|, 'foo.| + ' -> 'foo.'|, `foo.| + ` -> `foo.`|
+@test
+def "insert-edit closes a quote left open earlier in the line" [] {
+  for pair in ($pairs | where {|p| $p.open == $p.close }) {
+    let before = $"($pair.open)foo."
+    let line = $"($pair.open)foo.($pair.open)"
+    assert equal (autopair insert-edit $before 5 $pair.open) { line: $line, pos: 6 } $"quote ($pair.open)"
+  }
+}
+
+# | " + " -> "| "
+@test
+def "insert-edit counts quotes on both sides of the cursor" [] {
+  assert equal (autopair insert-edit ' "' 0 '"') { line: '" "', pos: 1 }
+}
+
+# "a" | + " -> "a" "|"
+@test
+def "insert-edit pairs a quote when the line has no open one" [] {
+  assert equal (autopair insert-edit '"a" ' 4 '"') { line: '"a" ""', pos: 5 }
 }
 
 # feat| + ( -> feat(|)
