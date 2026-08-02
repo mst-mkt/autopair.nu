@@ -1,5 +1,47 @@
 {
   "nodes": {
+    "agent-skills": {
+      "inputs": {
+        "home-manager": "home-manager",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1785147662,
+        "narHash": "sha256-EsFpoWBgQ55s4EOpbDDkN5YmgSED2CDMm1Yl7cHtKcY=",
+        "owner": "Kyure-A",
+        "repo": "agent-skills-nix",
+        "rev": "1843a76fa0c66b8886ac272925aca5ec27195950",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Kyure-A",
+        "repo": "agent-skills-nix",
+        "type": "github"
+      }
+    },
+    "home-manager": {
+      "inputs": {
+        "nixpkgs": [
+          "agent-skills",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1785119578,
+        "narHash": "sha256-3VMVuOJ6fK+RNOXVmqusqUwQ1sDfPeddNKaM2JR/4Y0=",
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "rev": "e83dffa86cccb6237fe194d4eeb47f41557749d1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1785542685,
@@ -16,9 +58,27 @@
         "type": "github"
       }
     },
+    "nushell-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1784464479,
+        "narHash": "sha256-b4/JOcpUa2BittwZz/w3IPUik4QPlpqcgc2dgDDbb1E=",
+        "owner": "nushell",
+        "repo": "nu_scripts",
+        "rev": "381eb7577705b00bea437da7c0439c39ff05f06b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nushell",
+        "repo": "nu_scripts",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
-        "nixpkgs": "nixpkgs"
+        "agent-skills": "agent-skills",
+        "nixpkgs": "nixpkgs",
+        "nushell-skills": "nushell-skills"
       }
     }
   },
