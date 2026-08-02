@@ -8,6 +8,22 @@ module autopair {
     "`": "`"
   }
 
+  const spaces = [" " "\t" "\n" "\r"]
+
+  def can-pair [
+    char: string
+    left: string
+    right: string
+  ]: nothing -> bool {
+    let closes = ($pairs | values)
+    let brackets = ($closes | where {|c| $c not-in ($pairs | columns) })
+    let same_char = ($char == ($pairs | get $char))
+    let right_free = ($right == "" or $right in $spaces or $right in $closes)
+    let left_free = (not $same_char or ($left != $char and $left !~ '\w' and $left not-in $brackets))
+
+    $right_free and $left_free
+  }
+
   export def insert-edit [
     line: string
     pos: int
@@ -18,10 +34,11 @@ module autopair {
     let chars = ($line | split chars)
     let head = ($chars | slice ..<$pos | str join)
     let tail = ($chars | slice $pos.. | str join)
+    let left = ($chars | slice ($pos - 1)..<$pos | str join)
     let right = ($chars | get --optional $pos | default "")
     let inserted = (match $char {
       $c if $c == $right and $c in ($pairs | values) => ""
-      $c if $c in ($pairs | columns) => $"($c)($pairs | get $c)"
+      $c if $c in ($pairs | columns) and (can-pair $c $left $right) => $"($c)($pairs | get $c)"
       $c => $c
     })
 
