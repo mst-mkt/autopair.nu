@@ -56,5 +56,21 @@
           };
         };
       });
+
+      checks = forAllSystems (pkgs: {
+        tests =
+          pkgs.runCommand "autopair-tests"
+            {
+              nativeBuildInputs = [ pkgs.nushell ];
+              NU_LIB_DIRS = "${nutest}";
+            }
+            ''
+              cp ${../autopair.nu} autopair.nu
+              cp -r ${../tests} tests
+
+              nu -n -c 'use nutest; nutest run-tests --path tests --fail'
+              touch $out
+            '';
+      });
     };
 }
