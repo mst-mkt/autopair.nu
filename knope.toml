@@ -1,0 +1,48 @@
+[package]
+changelog = "CHANGELOG.md"
+versioned_files = [
+  { path = "flake.nix", regex = 'version = "(?<version>\d+\.\d+\.\d+)"' },
+  { path = "nupm.nuon", regex = 'version: "(?<version>\d+\.\d+\.\d+)"' },
+]
+
+[github]
+owner = "mst-mkt"
+repo = "autopair.nu"
+
+[[workflows]]
+name = "prepare-release"
+
+[[workflows.steps]]
+type = "Command"
+command = "git switch -c release"
+
+[[workflows.steps]]
+type = "PrepareRelease"
+
+[[workflows.steps]]
+type = "Command"
+command = "git add -A"
+
+[[workflows.steps]]
+type = "Command"
+command = "git commit -m \"chore: prepare release $version\""
+
+[[workflows.steps]]
+type = "Command"
+command = "git push --force --set-upstream origin release"
+
+[[workflows.steps]]
+type = "CreatePullRequest"
+base = "main"
+
+[workflows.steps.title]
+template = "chore: prepare release $version"
+
+[workflows.steps.body]
+template = "Automated release PR by knope. Merge to tag and release $version."
+
+[[workflows]]
+name = "release"
+
+[[workflows.steps]]
+type = "Release"

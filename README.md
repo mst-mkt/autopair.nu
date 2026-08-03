@@ -62,6 +62,7 @@ The link is needed because nupm installs scripts outside the autoload directorie
 The following tools and libraries are used. They are managed in `dev/flake.nix`, so using it is recommended.
 
 - [just](https://github.com/casey/just)
+- [knope](https://github.com/knope-dev/knope)
 - [Nushell](https://www.nushell.sh)
 - [nutest](https://github.com/vyadh/nutest)
 

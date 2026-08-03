@@ -47,6 +47,7 @@
         default = pkgs.mkShell {
           packages = [
             pkgs.just
+            pkgs.knope
             pkgs.nushell
           ];
 
