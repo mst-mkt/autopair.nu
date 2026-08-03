@@ -29,7 +29,7 @@
           '';
 
           meta = {
-            description = "Auto-close and delete matching delimiters in Nushell";
+            description = "Auto-pair brackets and quotes as you type in Nushell";
             homepage = "https://github.com/mst-mkt/autopair.nu";
             license = nixpkgs.lib.licenses.mit;
             platforms = nixpkgs.lib.platforms.all;
