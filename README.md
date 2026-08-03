@@ -37,6 +37,18 @@ http get https://raw.githubusercontent.com/mst-mkt/autopair.nu/main/autopair.nu
 | save --force ($dir | path join autopair.nu)
 ```
 
+### With nupm
+
+Not recommended. [nupm](https://github.com/nushell/nupm) is still experimental.
+
+```nu
+nupm install https://github.com/mst-mkt/autopair.nu.git --git
+
+ln -s ($nu.default-config-dir | path join nupm scripts autopair.nu) ($nu.user-autoload-dirs | first | path join autopair.nu)
+```
+
+The link is needed because nupm installs scripts outside the autoload directories.
+
 ## Requirements
 
 - Nushell 0.102.0 or later
