@@ -55,6 +55,12 @@ The link is needed because nupm installs scripts outside the autoload directorie
   - `slice`, which indexes the line, was renamed from `range` in this release
   - `$nu.user-autoload-dirs`, which the manual install writes to, landed in the same one
 
+## Known issues
+
+- The prompt is duplicated on every keystroke once it reaches the bottom row of the terminal
+  - Nushell 0.115.0 or later
+  - Fixed in [nushell/reedline#1196](https://github.com/nushell/reedline/issues/1196), pending a Nushell release
+
 ## Development
 
 ### Requirements
