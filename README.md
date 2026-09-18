@@ -60,6 +60,9 @@ The link is needed because nupm installs scripts outside the autoload directorie
 - The prompt is duplicated on every keystroke once it reaches the bottom row of the terminal
   - Nushell 0.115.0 or later
   - Fixed in [nushell/reedline#1196](https://github.com/nushell/reedline/issues/1196), pending a Nushell release
+- A selection is not deleted by backspace, and not replaced by a typed pair character
+  - The keybindings run as host commands, and `commandline` cannot read the selection
+  - Needs `commandline get-selection` from [nushell/nushell#18938](https://github.com/nushell/nushell/pull/18938)
 
 ## Development
 
