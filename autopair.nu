@@ -14,7 +14,10 @@ module autopair {
     text: string
     char: string
   ]: nothing -> int {
-    $text | split chars --grapheme-clusters | where {|c| $c == $char } | length
+    $text
+    | str replace --all $char ''
+    | str length --grapheme-clusters
+    | ($text | str length --grapheme-clusters) - $in
   }
 
   def balanced [
