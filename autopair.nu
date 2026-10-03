@@ -83,16 +83,19 @@ module autopair {
   export def backspace-edit [
     line: string
     pos: int
-  ]: nothing -> record<line: string, pos: int> {
+  ] : nothing -> record<line: string, pos: int> {
     if $pos <= 0 { return { line: $line, pos: $pos } }
 
-    let chars = ($line | split chars --grapheme-clusters)
-    let around = ($chars | slice ($pos - 1)..$pos | str join)
-    let in_empty_pair = ($around in ($pairs | items {|open, close| $open + $close }))
-    let deleted = if $in_empty_pair { [($pos - 1) $pos] } else { [($pos - 1)] }
+    let before = ($line | str substring --grapheme-clusters ($pos - 1)..($pos - 1))
+    let after = ($line | str substring --grapheme-clusters ($pos)..($pos))
+    let in_empty_pair = ($before in $pairs and ($pairs | get $before) == $after)
+    let drop_n = if $in_empty_pair { 1 } else { 0 }
+
+    let left = ($line | str substring --grapheme-clusters ..<($pos - 1))
+    let right = ($line | str substring --grapheme-clusters ($pos + $drop_n)..)
 
     {
-      line: ($chars | drop nth ...$deleted | str join)
+      line: ($left + $right)
       pos: ($pos - 1)
     }
   }
