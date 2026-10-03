@@ -42,9 +42,9 @@ module autopair {
     tail: string
   ]: nothing -> bool {
     let closes = ($pairs | values)
-    let brackets = ($closes | where {|c| $c not-in ($pairs | columns) })
-    let left = ($head | split chars --grapheme-clusters | last 1 | str join)
-    let right = ($tail | split chars --grapheme-clusters | first 1 | str join)
+    let brackets = ($closes | where $it not-in $pairs)
+    let left = ($head | str substring --grapheme-clusters (-1)..)
+    let right = ($tail | str substring --grapheme-clusters ..0)
     let same_char = ($char == ($pairs | get $char))
     let right_free = ($right == "" or $right in $spaces or $right in $closes)
     let left_free = (not $same_char or ($left != $char and $left !~ '\w' and $left not-in $brackets))
@@ -59,12 +59,11 @@ module autopair {
   ]: nothing -> record<line: string, pos: int> {
     if $pos < 0 { return { line: $line, pos: $pos } }
 
-    let chars = ($line | split chars --grapheme-clusters)
-    let head = ($chars | slice ..<$pos | str join)
-    let tail = ($chars | slice $pos.. | str join)
+    let head = ($line | str substring --grapheme-clusters ..<$pos)
+    let tail = ($line | str substring --grapheme-clusters $pos..)
     let inserted = (match $char {
       $c if $c in ($pairs | values) and ($tail | str starts-with $c) => ""
-      $c if $c in ($pairs | columns) and (can-pair $c $head $tail) => $"($c)($pairs | get $c)"
+      $c if $c in $pairs and (can-pair $c $head $tail) => $"($c)($pairs | get $c)"
       $c => $c
     })
 
