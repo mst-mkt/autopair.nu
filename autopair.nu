@@ -14,10 +14,7 @@ module autopair {
     text: string
     char: string
   ]: nothing -> int {
-    $text
-    | str replace --all $char ''
-    | str length --grapheme-clusters
-    | ($text | str length --grapheme-clusters) - $in
+    ($text | split row $char | length) - 1
   }
 
   def balanced [

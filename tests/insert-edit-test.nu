@@ -256,3 +256,9 @@ def "insert-edit pairs a bracket after a word char" [] {
 def "insert-edit pairs a bracket after a closing bracket" [] {
   assert equal (autopair insert-edit "foo()" 5 "[") { line: "foo()[]", pos: 6 }
 }
+
+# 🇯"🇵| + " -> 🇯"🇵"|
+@test
+def "insert-edit does not pairs a quote after split regional indicators" [] {
+  assert equal (autopair insert-edit '🇯"🇵' 3 '"') { line: '🇯"🇵"', pos: 4 }
+}
