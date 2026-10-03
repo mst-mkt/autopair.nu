@@ -1,6 +1,6 @@
 {
   name: "autopair"
-  version: "1.0.0"
+  version: "1.0.1"
   type: "script"
   description: "Auto-pair brackets and quotes as you type in Nushell"
   license: "LICENSE"
