@@ -1,8 +1,8 @@
 ## 1.0.1 (2026-10-03)
 
-### Notes
+### Performance
 
-- speed up pair checks on long lines
+- speed up pair checks on long lines (#6)
 
 ## 1.0.0 (2026-08-03)
 
