@@ -1,8 +1,7 @@
 use std/assert
 use std/testing *
-use fixtures.nu [pairs grapheme_clusters]
+use fixtures.nu [pairs, grapheme_clusters]
 source ../autopair.nu
-
 
 # | + ( -> (|), | + [ -> [|], | + { -> {|}
 # | + " -> "|", | + ' -> '|', | + ` -> `|`
@@ -10,7 +9,9 @@ source ../autopair.nu
 def "insert-edit inserts the closing char after an opening one" [] {
   for pair in $pairs {
     let line = $"($pair.open)($pair.close)"
-    assert equal (autopair insert-edit "" 0 $pair.open) { line: $line, pos: 1 } $"pair ($pair.open)"
+    assert equal (
+      autopair insert-edit "" 0 $pair.open
+    ) { line: $line, pos: 1 } $"pair ($pair.open)"
   }
 }
 
@@ -20,7 +21,9 @@ def "insert-edit inserts the closing char after an opening one" [] {
 def "insert-edit skips over a closing char already at the cursor" [] {
   for pair in $pairs {
     let line = $"($pair.open)($pair.close)"
-    assert equal (autopair insert-edit $line 1 $pair.close) { line: $line, pos: 2 } $"pair ($pair.close)"
+    assert equal (
+      autopair insert-edit $line 1 $pair.close
+    ) { line: $line, pos: 2 } $"pair ($pair.close)"
   }
 }
 
@@ -77,7 +80,9 @@ def "insert-edit counts chars, not bytes" [] {
 def "insert-edit does not split a grapheme cluster" [] {
   for cluster in $grapheme_clusters {
     let line = ($cluster + "()")
-    assert equal (autopair insert-edit $cluster 1 "(") { line: $line, pos: 2 } $"cluster ($cluster)"
+    assert equal (
+      autopair insert-edit $cluster 1 "("
+    ) { line: $line, pos: 2 } $"cluster ($cluster)"
   }
 }
 
@@ -98,7 +103,9 @@ def "insert-edit pairs at the start of a non-empty line" [] {
 def "insert-edit does not pair in front of a word char" [] {
   for pair in $pairs {
     let line = $"($pair.open)foo"
-    assert equal (autopair insert-edit "foo" 0 $pair.open) { line: $line, pos: 1 } $"pair ($pair.open)"
+    assert equal (
+      autopair insert-edit "foo" 0 $pair.open
+    ) { line: $line, pos: 1 } $"pair ($pair.open)"
   }
 }
 
@@ -132,7 +139,9 @@ def "insert-edit pairs in front of a closing bracket" [] {
   for pair in ($pairs | where {|p| $p.open != $p.close }) {
     let before = $"($pair.open)($pair.close)"
     let line = ($pair.open + "()" + $pair.close)
-    assert equal (autopair insert-edit $before 1 "(") { line: $line, pos: 2 } $"pair ($pair.close)"
+    assert equal (
+      autopair insert-edit $before 1 "("
+    ) { line: $line, pos: 2 } $"pair ($pair.close)"
   }
 }
 
@@ -142,7 +151,9 @@ def "insert-edit does not pair in front of an unmatched closing bracket" [] {
   for pair in ($pairs | where {|p| $p.open != $p.close }) {
     let before = $"foo($pair.close)"
     let line = $"foo($pair.open)($pair.close)"
-    assert equal (autopair insert-edit $before 3 $pair.open) { line: $line, pos: 4 } $"pair ($pair.open)"
+    assert equal (
+      autopair insert-edit $before 3 $pair.open
+    ) { line: $line, pos: 4 } $"pair ($pair.open)"
   }
 }
 
@@ -152,7 +163,9 @@ def "insert-edit pairs in front of a closing bracket that has an opening one" []
   for pair in ($pairs | where {|p| $p.open != $p.close }) {
     let before = $"($pair.open)foo($pair.close)"
     let line = $"($pair.open)foo($pair.open)($pair.close)($pair.close)"
-    assert equal (autopair insert-edit $before 4 $pair.open) { line: $line, pos: 5 } $"pair ($pair.open)"
+    assert equal (
+      autopair insert-edit $before 4 $pair.open
+    ) { line: $line, pos: 5 } $"pair ($pair.open)"
   }
 }
 
@@ -185,7 +198,9 @@ def "insert-edit does not count a closed bracket ahead of the cursor" [] {
 def "insert-edit does not pair a quote after a word char" [] {
   for pair in ($pairs | where {|p| $p.open == $p.close }) {
     let line = $"don($pair.open)"
-    assert equal (autopair insert-edit "don" 3 $pair.open) { line: $line, pos: 4 } $"quote ($pair.open)"
+    assert equal (
+      autopair insert-edit "don" 3 $pair.open
+    ) { line: $line, pos: 4 } $"quote ($pair.open)"
   }
 }
 
@@ -207,7 +222,9 @@ def "insert-edit does not pair a quote after the same quote" [] {
   for pair in ($pairs | where {|p| $p.open == $p.close }) {
     let before = $"($pair.open)($pair.open)"
     let line = $"($pair.open)($pair.open)($pair.open)"
-    assert equal (autopair insert-edit $before 2 $pair.open) { line: $line, pos: 3 } $"quote ($pair.open)"
+    assert equal (
+      autopair insert-edit $before 2 $pair.open
+    ) { line: $line, pos: 3 } $"quote ($pair.open)"
   }
 }
 
@@ -229,7 +246,9 @@ def "insert-edit closes a quote left open earlier in the line" [] {
   for pair in ($pairs | where {|p| $p.open == $p.close }) {
     let before = $"($pair.open)foo."
     let line = $"($pair.open)foo.($pair.open)"
-    assert equal (autopair insert-edit $before 5 $pair.open) { line: $line, pos: 6 } $"quote ($pair.open)"
+    assert equal (
+      autopair insert-edit $before 5 $pair.open
+    ) { line: $line, pos: 6 } $"quote ($pair.open)"
   }
 }
 

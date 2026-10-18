@@ -23,10 +23,12 @@ def "keybindings binds each pair char to the autopair command" [] {
       name: $"autopair_insert_($char)"
       modifier: none
       keycode: $"char_($char)"
-      mode: [emacs vi_insert]
+      mode: [emacs, vi_insert]
       event: { send: executehostcommand, cmd: $"autopair insert ($char | to nuon)" }
     }
-    assert equal (autopair keybindings | where name == $expected.name | first) $expected $"char ($char)"
+    assert equal (
+      autopair keybindings | where name == $expected.name | first
+    ) $expected $"char ($char)"
   }
 }
 
@@ -69,7 +71,13 @@ def "install does not duplicate bindings when run twice" [] {
 @test
 def "install replaces a stale binding of its own" [] {
   $env.config.keybindings = [
-    { name: autopair_backspace, modifier: none, keycode: backspace, mode: emacs, event: { send: enter } }
+    {
+      name: autopair_backspace
+      modifier: none
+      keycode: backspace
+      mode: emacs
+      event: { send: enter }
+    }
   ]
   autopair install
 

@@ -3,3 +3,6 @@ dev:
 
 test *args:
   nu -n -c 'use nutest; nutest run-tests --path tests --fail {{ args }}'
+
+fmt *args:
+  nuten format {{ args }}

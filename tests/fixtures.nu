@@ -11,4 +11,4 @@ export def pair-chars []: nothing -> list<string> {
   $pairs | get open | append ($pairs | get close) | uniq
 }
 
-export const grapheme_clusters = ["👨‍👩‍👧" "🇯🇵" "🫶🏻"]
+export const grapheme_clusters = ["👨‍👩‍👧", "🇯🇵", "🫶🏻"]
