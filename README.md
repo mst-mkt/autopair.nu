@@ -72,14 +72,16 @@ The following tools and libraries are used. They are managed in `dev/flake.nix`,
 - [just](https://github.com/casey/just)
 - [knope](https://github.com/knope-dev/knope)
 - [Nushell](https://www.nushell.sh)
+- [Nuten](https://github.com/mst-mkt/nuten)
 - [nutest](https://github.com/vyadh/nutest)
 
 ### Scripts
 
-| command     | description                                         |
-| ----------- | --------------------------------------------------- |
-| `just dev`  | Start Nushell with the module loaded                |
-| `just test` | Run the test suite, forwarding extra args to nutest |
+| command     | description                                              |
+| ----------- | -------------------------------------------------------- |
+| `just dev`  | Start Nushell with the module loaded                     |
+| `just test` | Run the test suite, forwarding extra args to nutest      |
+| `just fmt`  | Format the Nushell files, forwarding extra args to Nuten |
 
 ## Inspired by
 
