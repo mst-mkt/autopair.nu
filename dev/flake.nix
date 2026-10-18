@@ -5,6 +5,10 @@
       url = "github:Kyure-A/agent-skills-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nuten = {
+      url = "github:mst-mkt/nuten";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nushell-skills = {
       url = "github:nushell/nu_scripts";
       flake = false;
@@ -20,6 +24,7 @@
       nixpkgs,
       agent-skills,
       nushell-skills,
+      nuten,
       nutest,
       ...
     }:
@@ -49,6 +54,7 @@
             pkgs.just
             pkgs.knope
             pkgs.nushell
+            nuten.packages.${pkgs.stdenv.hostPlatform.system}.default
           ];
 
           env.NU_LIB_DIRS = "${nutest}";
