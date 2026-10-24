@@ -17,7 +17,7 @@
         pkgs:
         pkgs.stdenvNoCC.mkDerivation {
           pname = "autopair.nu";
-          version = "1.0.1";
+          version = "1.0.2";
 
           src = ./autopair.nu;
           dontUnpack = true;

@@ -1,3 +1,10 @@
+## 1.0.2 (2026-10-24)
+
+### Notes
+
+- speed up inserts on long lines
+- speed up backspace
+
 ## 1.0.1 (2026-10-03)
 
 ### Performance
