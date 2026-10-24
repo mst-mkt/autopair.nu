@@ -8,7 +8,7 @@ module autopair {
     "`": "`"
   }
 
-  const spaces = [" " "\t" "\n" "\r"]
+  const spaces = [" ", "\t", "\n", "\r"]
 
   def count-char [
     text: string
@@ -32,7 +32,7 @@ module autopair {
       let unclosed = ((count-char $head $open) - (count-char $head $close))
       let unopened = ((count-char $tail $close) - (count-char $tail $open))
 
-      ([$unclosed 0] | math max) >= $unopened
+      ([$unclosed, 0] | math max) >= $unopened
     }
   }
 
@@ -42,12 +42,14 @@ module autopair {
     tail: string
   ]: nothing -> bool {
     let closes = ($pairs | values)
-    let brackets = ($closes | where {|c| $c not-in ($pairs | columns) })
-    let left = ($head | split chars --grapheme-clusters | last 1 | str join)
-    let right = ($tail | split chars --grapheme-clusters | first 1 | str join)
+    let brackets = ($closes | where $it not-in $pairs)
+    let left = ($head | str substring --grapheme-clusters (-1)..)
+    let right = ($tail | str substring --grapheme-clusters ..0)
     let same_char = ($char == ($pairs | get $char))
     let right_free = ($right == "" or $right in $spaces or $right in $closes)
-    let left_free = (not $same_char or ($left != $char and $left !~ '\w' and $left not-in $brackets))
+    let left_free = (
+      not $same_char or ($left != $char and $left !~ '\w' and $left not-in $brackets)
+    )
 
     $right_free and $left_free and (balanced $char $head $tail)
   }
@@ -57,16 +59,19 @@ module autopair {
     pos: int
     char: string
   ]: nothing -> record<line: string, pos: int> {
-    if $pos < 0 { return { line: $line, pos: $pos } }
+    if $pos < 0 {
+      return { line: $line, pos: $pos }
+    }
 
-    let chars = ($line | split chars --grapheme-clusters)
-    let head = ($chars | slice ..<$pos | str join)
-    let tail = ($chars | slice $pos.. | str join)
-    let inserted = (match $char {
-      $c if $c in ($pairs | values) and ($tail | str starts-with $c) => ""
-      $c if $c in ($pairs | columns) and (can-pair $c $head $tail) => $"($c)($pairs | get $c)"
-      $c => $c
-    })
+    let head = ($line | str substring --grapheme-clusters ..<$pos)
+    let tail = ($line | str substring --grapheme-clusters $pos..)
+    let inserted = (
+      match $char {
+        $c if $c in ($pairs | values) and ($tail | str starts-with $c) => ""
+        $c if $c in $pairs and (can-pair $c $head $tail) => $"($c)($pairs | get $c)"
+        $c => $c
+      }
+    )
 
     {
       line: $"($head)($inserted)($tail)"
@@ -83,8 +88,10 @@ module autopair {
   export def backspace-edit [
     line: string
     pos: int
-  ] : nothing -> record<line: string, pos: int> {
-    if $pos <= 0 { return { line: $line, pos: $pos } }
+  ]: nothing -> record<line: string, pos: int> {
+    if $pos <= 0 {
+      return { line: $line, pos: $pos }
+    }
 
     let before = ($line | str substring --grapheme-clusters ($pos - 1)..($pos - 1))
     let after = ($line | str substring --grapheme-clusters ($pos)..($pos))
@@ -102,7 +109,9 @@ module autopair {
 
   export def backspace [] {
     let pos = (commandline get-cursor)
-    if $pos <= 0 { return }
+    if $pos <= 0 {
+      return
+    }
 
     let edited = (backspace-edit (commandline) $pos)
     commandline edit --replace $edited.line
@@ -111,7 +120,7 @@ module autopair {
 
   def pair-chars []: nothing -> list<string> {
     $pairs
-    | items {|open, close| [$open $close] }
+    | items {|open, close| [$open, $close] }
     | flatten
     | uniq
   }
@@ -119,21 +128,21 @@ module autopair {
   export def keybindings []: nothing -> list<record> {
     pair-chars
     | each {|char|
-      {
-        name: $"autopair_insert_($char)"
-        modifier: none
-        keycode: $"char_($char)"
-        mode: [emacs vi_insert]
-        event: { send: executehostcommand, cmd: $"autopair insert ($char | to nuon)" }
+        {
+          name: $"autopair_insert_($char)"
+          modifier: none
+          keycode: $"char_($char)"
+          mode: [emacs, vi_insert]
+          event: { send: executehostcommand, cmd: $"autopair insert ($char | to nuon)" }
+        }
       }
-    }
     | append {
-      name: autopair_backspace
-      modifier: none
-      keycode: backspace
-      mode: [emacs vi_insert]
-      event: { send: executehostcommand, cmd: "autopair backspace" }
-    }
+        name: autopair_backspace
+        modifier: none
+        keycode: backspace
+        mode: [emacs, vi_insert]
+        event: { send: executehostcommand, cmd: "autopair backspace" }
+      }
   }
 
   export def --env install [] {

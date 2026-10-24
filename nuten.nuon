@@ -1,0 +1,7 @@
+{
+  line_width: 100
+  indent_style: space
+  indent_width: 2
+  line_ending: auto
+  commas: inline
+}
