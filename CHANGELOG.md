@@ -1,3 +1,11 @@
+## 1.0.2 (2026-10-24)
+
+### Performance
+
+- speed up inserts on long lines (#8)
+- speed up backspace (#9)
+- speed up pairing on short lines (#12)
+
 ## 1.0.1 (2026-10-03)
 
 ### Performance
