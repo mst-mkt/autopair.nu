@@ -8,6 +8,8 @@ module autopair {
     "`": "`"
   }
 
+  const brackets = [")", "]", "}"]
+
   const spaces = [" ", "\t", "\n", "\r"]
 
   def count-char [
@@ -42,7 +44,6 @@ module autopair {
     tail: string
   ]: nothing -> bool {
     let closes = ($pairs | values)
-    let brackets = ($closes | where $it not-in $pairs)
     let left = ($head | str substring --grapheme-clusters (-1)..)
     let right = ($tail | str substring --grapheme-clusters ..0)
     let same_char = ($char == ($pairs | get $char))
