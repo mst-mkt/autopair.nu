@@ -1,8 +1,7 @@
 use std/assert
 use std/testing *
-use fixtures.nu [pairs grapheme_clusters]
+use fixtures.nu [pairs, grapheme_clusters]
 source ../autopair.nu
-
 
 # |() -> |()
 @test

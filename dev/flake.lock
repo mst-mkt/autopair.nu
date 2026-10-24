@@ -21,6 +21,43 @@
         "type": "github"
       }
     },
+    "crane": {
+      "locked": {
+        "lastModified": 1791754810,
+        "narHash": "sha256-cN0Mgk+sQtCJcGWs9H4M0CnLRAuC4I8aCwiBTcBJs6E=",
+        "owner": "ipetkov",
+        "repo": "crane",
+        "rev": "bd63bf1d0a0f6dcacd7549c714a671ee63b0db6a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ipetkov",
+        "repo": "crane",
+        "type": "github"
+      }
+    },
+    "fenix": {
+      "inputs": {
+        "nixpkgs": [
+          "nuten",
+          "nixpkgs"
+        ],
+        "rust-analyzer-src": "rust-analyzer-src"
+      },
+      "locked": {
+        "lastModified": 1792062577,
+        "narHash": "sha256-HrXmKzV5mOZsug7SUrSX+ud1fXurTjw0R+G0qDzL15Q=",
+        "owner": "nix-community",
+        "repo": "fenix",
+        "rev": "fd5ea49da0ae244caac8872e32f3af90df79e065",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "fenix",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -74,6 +111,28 @@
         "type": "github"
       }
     },
+    "nuten": {
+      "inputs": {
+        "crane": "crane",
+        "fenix": "fenix",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1792333651,
+        "narHash": "sha256-tfCFdcWunNq2qJ8YyLXOIBLMMhWvE+GDzl4MhGZ4Zio=",
+        "owner": "mst-mkt",
+        "repo": "nuten",
+        "rev": "7bde1153e2ebed05ecffd219100412a7a58187fb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mst-mkt",
+        "repo": "nuten",
+        "type": "github"
+      }
+    },
     "nutest": {
       "flake": false,
       "locked": {
@@ -96,7 +155,25 @@
         "agent-skills": "agent-skills",
         "nixpkgs": "nixpkgs",
         "nushell-skills": "nushell-skills",
+        "nuten": "nuten",
         "nutest": "nutest"
+      }
+    },
+    "rust-analyzer-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1791835614,
+        "narHash": "sha256-CMXY9x3W43sVW8G7IhXAi3vNqkbWwbsxtKldef8Jar0=",
+        "owner": "rust-lang",
+        "repo": "rust-analyzer",
+        "rev": "dd5ed69d4b5b26fe7f91013b1d02608cd37ae199",
+        "type": "github"
+      },
+      "original": {
+        "owner": "rust-lang",
+        "ref": "nightly",
+        "repo": "rust-analyzer",
+        "type": "github"
       }
     }
   },
