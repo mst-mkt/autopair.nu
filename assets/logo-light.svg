@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="16 16 224 224" width="512" height="512" role="img">
+  <title>autopair.nu</title>
+  <defs>
+    <linearGradient id="g" gradientUnits="userSpaceOnUse" x1="71.6" y1="34" x2="203.2" y2="222">
+      <stop offset="0" stop-color="#5FB81C"/>
+      <stop offset="1" stop-color="#3C8A05"/>
+    </linearGradient>
+  </defs>
+  <path d="M114.67 34H82A48 48 0 0 0 34 82V174A48 48 0 0 0 82 222H114.67L129.02 168H100A12 12 0 0 1 88 156V100A12 12 0 0 1 100 88H129.02Z" fill="#0A0A0A"/>
+  <path d="M135.36 34H174A48 48 0 0 1 222 82V174A48 48 0 0 1 174 222H135.36L149.71 168H156A12 12 0 0 0 168 156V100A12 12 0 0 0 156 88H149.71Z" fill="url(#g)"/>
+</svg>

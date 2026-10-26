@@ -1,4 +1,4 @@
-# autopair.nu
+# <picture><source media="(prefers-color-scheme: dark)" srcset="assets/logo-dark.svg"><img src="assets/logo-light.svg" alt="" height="50" align="absmiddle"></picture> autopair.nu
 
 A Nushell module that auto-pairs brackets and quotes as you type.
 
